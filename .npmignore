@@ -1,0 +1,25 @@
+# 源代码（只发布构建后的产物）
+src/
+# 测试目录
+__tests__/
+test/
+# 开发配置
+tsconfig.json
+jest.config.js
+.eslintrc.js
+.prettierrc
+# 编辑器和IDE文件
+.idea/
+.vscode/
+*.swp
+*.swo
+# 构建脚本
+scripts/
+# 日志和临时文件
+*.log
+tmp/
+temp/
+# 环境变量
+.env*
+# 覆盖率报告
+coverage/
