@@ -1,6 +1,6 @@
 import { IEntity } from './entities/IEntity';
-import { IPlayerEntity, IGameEntity } from './entities/BaseEntity';
-import { GameId, PlayerId, EntityId, GameState as GameStateEnum } from './types';
+import { PlayerEntity, GameEntity } from './entities/BaseEntity';
+import { GameId, PlayerId, EntityId, GameState as GameStateEnum } from '../types';
 
 /**
  * 游戏状态接口
@@ -15,12 +15,12 @@ export interface IGameState {
   /**
    * 游戏实体
    */
-  gameEntity: IGameEntity;
+  gameEntity: GameEntity;
 
   /**
    * 玩家列表
    */
-  players: IPlayerEntity[];
+  players: PlayerEntity[];
 
   /**
    * 当前回合玩家
@@ -45,7 +45,7 @@ export interface IGameState {
   /**
    * 获取指定玩家
    */
-  getPlayer(playerId: PlayerId): IPlayerEntity | null;
+  getPlayer(playerId: PlayerId): PlayerEntity | null;
 
   /**
    * 获取指定实体
@@ -60,12 +60,12 @@ export interface IGameState {
   /**
    * 获取当前回合玩家
    */
-  getCurrentPlayer(): IPlayerEntity;
+  getCurrentPlayer(): PlayerEntity;
 
   /**
    * 获取对手玩家
    */
-  getOpponentPlayer(): IPlayerEntity;
+  getOpponentPlayer(): PlayerEntity;
 
   /**
    * 获取指定玩家的实体
@@ -130,32 +130,32 @@ export interface IPlayerState {
   /**
    * 玩家实体
    */
-  entity: IPlayerEntity;
+  entity: PlayerEntity;
 
   /**
    * 英雄
    */
-  hero: IHeroEntity;
+  hero: any;
 
   /**
    * 英雄技能
    */
-  heroPower: IHeroPowerEntity;
+  heroPower: any;
 
   /**
    * 武器
    */
-  weapon?: IWeaponEntity;
+  weapon?: any;
 
   /**
    * 手牌
    */
-  hand: ICardEntity[];
+  hand: any[];
 
   /**
    * 牌库
    */
-  deck: ICardEntity[];
+  deck: any[];
 
   /**
    * 墓地
@@ -165,12 +165,12 @@ export interface IPlayerState {
   /**
    * 奥秘
    */
-  secrets: ISecretEntity[];
+  secrets: any[];
 
   /**
    * 战场随从
    */
-  minions: IMinionEntity[];
+  minions: any[];
 
   /**
    * 获取所有实体
@@ -202,6 +202,3 @@ export interface IPlayerState {
    */
   getZoneCount(zone: string): number;
 }
-
-// 导入其他接口
-import { IHeroEntity, IHeroPowerEntity, IWeaponEntity, ICardEntity, IMinionEntity } from './entities/BaseEntity';

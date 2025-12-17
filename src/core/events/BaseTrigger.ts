@@ -1,4 +1,4 @@
-import { ITrigger, ITriggerConfig } from './ITrigger';
+import { ITrigger } from './ITrigger';
 import { IEntity } from '../entities/IEntity';
 import { IGameEvent } from './IGameEvent';
 import { EventType, TriggerPriority } from '../../types';
@@ -112,7 +112,7 @@ export abstract class BaseTrigger implements ITrigger {
  * 用于简单的回调式扳机
  */
 export class SimpleTrigger extends BaseTrigger {
-  private handler: (event: IGameEvent) => IGameEvent[] | void;
+  private readonly handler!: (event: IGameEvent) => IGameEvent[] | void;
 
   constructor(
     entity: IEntity,
@@ -133,7 +133,7 @@ export class SimpleTrigger extends BaseTrigger {
     }
 
     this.incrementTriggerCount();
-    return this.handler(event);
+    return this.handler!(event);
   }
 
   clone(): ITrigger {
@@ -153,6 +153,8 @@ export class SimpleTrigger extends BaseTrigger {
  * 伤害扳机
  */
 export class DamageTrigger extends BaseTrigger {
+  private readonly handler!: (event: IGameEvent) => IGameEvent[] | void;
+
   constructor(
     entity: IEntity,
     handler: (event: IGameEvent) => IGameEvent[] | void,
@@ -162,6 +164,7 @@ export class DamageTrigger extends BaseTrigger {
     maxTriggers: number = 0
   ) {
     super(entity, EventType.DAMAGE, condition, priority, isOneTime, maxTriggers);
+    this.handler = handler;
   }
 
   onTrigger(event: IGameEvent): IGameEvent[] | void {
@@ -174,7 +177,8 @@ export class DamageTrigger extends BaseTrigger {
     return this.handleDamage(event);
   }
 
-  protected handleDamage(event: IGameEvent): IGameEvent[] | void {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+  protected handleDamage(_event: IGameEvent): IGameEvent[] | void {
     // 由子类实现具体的伤害处理逻辑
     throw new Error('Method not implemented');
   }
@@ -189,14 +193,14 @@ export class DamageTrigger extends BaseTrigger {
       this.maxTriggers
     );
   }
-
-  private handler: (event: IGameEvent) => IGameEvent[] | void;
 }
 
 /**
  * 治疗扳机
  */
 export class HealTrigger extends BaseTrigger {
+  private readonly handler!: (event: IGameEvent) => IGameEvent[] | void;
+
   constructor(
     entity: IEntity,
     handler: (event: IGameEvent) => IGameEvent[] | void,
@@ -206,6 +210,7 @@ export class HealTrigger extends BaseTrigger {
     maxTriggers: number = 0
   ) {
     super(entity, EventType.HEAL, condition, priority, isOneTime, maxTriggers);
+    this.handler = handler;
   }
 
   onTrigger(event: IGameEvent): IGameEvent[] | void {
@@ -217,7 +222,8 @@ export class HealTrigger extends BaseTrigger {
     return this.handleHeal(event);
   }
 
-  protected handleHeal(event: IGameEvent): IGameEvent[] | void {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+  protected handleHeal(_event: IGameEvent): IGameEvent[] | void {
     // 由子类实现具体的治疗处理逻辑
     throw new Error('Method not implemented');
   }
@@ -232,14 +238,14 @@ export class HealTrigger extends BaseTrigger {
       this.maxTriggers
     );
   }
-
-  private handler: (event: IGameEvent) => IGameEvent[] | void;
 }
 
 /**
  * 召唤扳机
  */
 export class SummonTrigger extends BaseTrigger {
+  private readonly handler!: (event: IGameEvent) => IGameEvent[] | void;
+
   constructor(
     entity: IEntity,
     handler: (event: IGameEvent) => IGameEvent[] | void,
@@ -249,6 +255,7 @@ export class SummonTrigger extends BaseTrigger {
     maxTriggers: number = 0
   ) {
     super(entity, EventType.SUMMON, condition, priority, isOneTime, maxTriggers);
+    this.handler = handler;
   }
 
   onTrigger(event: IGameEvent): IGameEvent[] | void {
@@ -260,7 +267,8 @@ export class SummonTrigger extends BaseTrigger {
     return this.handleSummon(event);
   }
 
-  protected handleSummon(event: IGameEvent): IGameEvent[] | void {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+  protected handleSummon(_event: IGameEvent): IGameEvent[] | void {
     // 由子类实现具体的召唤处理逻辑
     throw new Error('Method not implemented');
   }
@@ -275,14 +283,14 @@ export class SummonTrigger extends BaseTrigger {
       this.maxTriggers
     );
   }
-
-  private handler: (event: IGameEvent) => IGameEvent[] | void;
 }
 
 /**
  * 死亡扳机
  */
 export class DeathTrigger extends BaseTrigger {
+  private readonly handler!: (event: IGameEvent) => IGameEvent[] | void;
+
   constructor(
     entity: IEntity,
     handler: (event: IGameEvent) => IGameEvent[] | void,
@@ -292,6 +300,7 @@ export class DeathTrigger extends BaseTrigger {
     maxTriggers: number = 0
   ) {
     super(entity, EventType.DEATH, condition, priority, isOneTime, maxTriggers);
+    this.handler = handler;
   }
 
   onTrigger(event: IGameEvent): IGameEvent[] | void {
@@ -303,7 +312,8 @@ export class DeathTrigger extends BaseTrigger {
     return this.handleDeath(event);
   }
 
-  protected handleDeath(event: IGameEvent): IGameEvent[] | void {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+  protected handleDeath(_event: IGameEvent): IGameEvent[] | void {
     // 由子类实现具体的死亡处理逻辑
     throw new Error('Method not implemented');
   }
@@ -318,9 +328,4 @@ export class DeathTrigger extends BaseTrigger {
       this.maxTriggers
     );
   }
-
-  private handler: (event: IGameEvent) => IGameEvent[] | void;
 }
-
-// 导入ZoneType和PlayerId类型（如果需要）
-import { ZoneType, PlayerId } from '../../types';

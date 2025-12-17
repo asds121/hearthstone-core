@@ -1,11 +1,25 @@
 import { IGameState } from './GameState';
 import { IEntity } from './entities/IEntity';
-import { IGameEntity, IPlayerEntity } from './entities/BaseEntity';
+import {
+  GameEntity,
+  PlayerEntity,
+  HeroEntity,
+  HeroPowerEntity,
+  CardEntity,
+} from './entities/BaseEntity';
 import { EntityManager } from '../systems/entity/EntityManager';
 import { EventManager } from '../systems/event/EventManager';
 import { ZoneManager } from '../systems/zone/ZoneManager';
 import { SequenceManager } from '../systems/sequence/SequenceManager';
-import { GameId, PlayerId, EntityId, EntityType, GameState as GameStateEnum, CreateGameConfig } from './types';
+import {
+  GameId,
+  PlayerId,
+  EntityId,
+  GameState as GameStateEnum,
+  CreateGameConfig,
+  EventType,
+  TagType,
+} from '../types';
 import { v4 as uuidv4 } from 'uuid';
 
 /**
@@ -14,18 +28,18 @@ import { v4 as uuidv4 } from 'uuid';
  */
 export class Game implements IGameState {
   readonly id: GameId;
-  gameEntity: IGameEntity;
-  players: IPlayerEntity[];
+  gameEntity!: GameEntity;
+  players!: PlayerEntity[];
   currentPlayer: PlayerId;
   state: GameStateEnum;
   startTime: number;
   endTime?: number;
 
   // 系统组件
-  private entityManager: EntityManager;
-  private eventManager: EventManager;
-  private zoneManager: ZoneManager;
-  private sequenceManager: SequenceManager;
+  private readonly entityManager: EntityManager;
+  private readonly eventManager: EventManager;
+  private readonly zoneManager: ZoneManager;
+  private readonly sequenceManager: SequenceManager;
 
   constructor(config: CreateGameConfig) {
     this.id = uuidv4();
@@ -53,15 +67,15 @@ export class Game implements IGameState {
       turn: 1,
       step: 0,
       state: 1, // RUNNING
-    }) as IGameEntity;
+    }) as GameEntity;
 
     // 创建玩家
     this.players = [];
     this.createPlayer(config.player1, 1 as PlayerId);
     this.createPlayer(config.player2, 2 as PlayerId);
 
-    // 设置游戏状态为运行中
-    this.state = GameStateEnum.RUNNING;
+    // 设置游戏状态为等待中（游戏开始后会变成RUNNING）
+    this.state = GameStateEnum.WAITING;
   }
 
   /**
@@ -74,7 +88,7 @@ export class Game implements IGameState {
       name: playerData.name,
       controller: playerId,
       owner: playerId,
-    }) as IPlayerEntity;
+    }) as unknown as PlayerEntity;
 
     // 创建英雄
     const hero = this.entityManager.createHeroEntity({
@@ -87,7 +101,7 @@ export class Game implements IGameState {
       baseAttack: 0,
       isExhausted: true,
       canAttack: false,
-    }) as IHeroEntity;
+    }) as HeroEntity;
     player.hero = hero;
 
     // 创建英雄技能
@@ -97,7 +111,7 @@ export class Game implements IGameState {
       cost: 2,
       isExhausted: true,
       canUse: true,
-    }) as IHeroPowerEntity;
+    }) as HeroPowerEntity;
     player.heroPower = heroPower;
 
     // 初始化其他属性
@@ -119,7 +133,7 @@ export class Game implements IGameState {
   /**
    * 创建牌库
    */
-  private createDeck(player: IPlayerEntity, deckData: any[]): void {
+  private createDeck(player: PlayerEntity, deckData: any[]): void {
     for (let i = 0; i < deckData.length; i++) {
       const cardData = deckData[i];
       const card = this.entityManager.createCardEntity({
@@ -130,7 +144,7 @@ export class Game implements IGameState {
         owner: player.owner,
         zone: 'DECK',
         zonePosition: i + 1,
-      }) as ICardEntity;
+      }) as CardEntity;
       player.deck.push(card);
     }
   }
@@ -138,8 +152,8 @@ export class Game implements IGameState {
   /**
    * 获取指定玩家
    */
-  getPlayer(playerId: PlayerId): IPlayerEntity | null {
-    return this.players.find(p => p.controller === playerId) || null;
+  getPlayer(playerId: PlayerId): PlayerEntity | null {
+    return this.players.find(p => p.controller === playerId) ?? null;
   }
 
   /**
@@ -159,14 +173,14 @@ export class Game implements IGameState {
   /**
    * 获取当前回合玩家
    */
-  getCurrentPlayer(): IPlayerEntity {
+  getCurrentPlayer(): PlayerEntity {
     return this.getPlayer(this.currentPlayer)!;
   }
 
   /**
    * 获取对手玩家
    */
-  getOpponentPlayer(): IPlayerEntity {
+  getOpponentPlayer(): PlayerEntity {
     const opponentId = this.currentPlayer === 1 ? 2 : 1;
     return this.getPlayer(opponentId as PlayerId)!;
   }
@@ -183,7 +197,7 @@ export class Game implements IGameState {
     const entities: IEntity[] = [];
     entities.push(player.hero);
     entities.push(player.heroPower);
-    entities.push(...player.minions);
+    // entities.push(...player.minions); // minions属性不存在
     entities.push(...player.hand);
     entities.push(...player.deck);
     entities.push(...player.graveyard);
@@ -220,7 +234,7 @@ export class Game implements IGameState {
    */
   setCurrentPlayer(playerId: PlayerId): void {
     this.currentPlayer = playerId;
-    this.gameEntity.setTag('CURRENT_PLAYER', playerId);
+    this.gameEntity.setTag(TagType.CURRENT_PLAYER as any, playerId);
   }
 
   /**
@@ -228,7 +242,7 @@ export class Game implements IGameState {
    */
   setState(state: GameStateEnum): void {
     this.state = state;
-    this.gameEntity.setTag('STATE', state);
+    this.gameEntity.setTag(TagType.PLAYSTATE as any, state);
     if (state === GameStateEnum.COMPLETE && !this.endTime) {
       this.endTime = Date.now();
     }
@@ -255,7 +269,7 @@ export class Game implements IGameState {
     this.state = GameStateEnum.RUNNING;
     // 触发游戏开始事件
     this.eventManager.triggerEvent({
-      type: 'GAME_START',
+      type: EventType.GAME_START,
       source: this.gameEntity,
       targets: [this.gameEntity],
       timestamp: Date.now(),
@@ -271,7 +285,7 @@ export class Game implements IGameState {
 
     // 触发游戏结束事件
     this.eventManager.triggerEvent({
-      type: 'GAME_END',
+      type: EventType.GAME_END,
       source: this.gameEntity,
       targets: [this.gameEntity],
       timestamp: Date.now(),
@@ -300,7 +314,7 @@ export class Game implements IGameState {
   /**
    * 从JSON对象恢复
    */
-  fromJSON(data: any): void {
+  fromJSON(): void {
     // 这里需要实现从JSON恢复游戏状态的逻辑
     // 由于涉及复杂的系统状态恢复，暂时留空
     throw new Error('Game state restoration not implemented');

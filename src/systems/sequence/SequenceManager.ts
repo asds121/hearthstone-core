@@ -24,7 +24,7 @@ export class SequenceManager {
    */
   endCurrentSequence(): void {
     this.currentSequence = null;
-    
+
     // 处理队列中的下一个序列
     if (this.sequenceQueue.length > 0) {
       const nextSequence = this.sequenceQueue.shift();

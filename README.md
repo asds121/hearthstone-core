@@ -24,7 +24,7 @@ This game engine follows a layered architecture:
 ## Installation
 
 ```bash
-npm install hearthstone-game-engine
+npm install
 ```
 
 ## Quick Start
@@ -40,7 +40,7 @@ const game = new Game({
     heroClass: 'MAGE',
     deck: [
       // Your deck definition
-    ]
+    ],
   },
   player2: {
     id: 'player2',
@@ -48,8 +48,8 @@ const game = new Game({
     heroClass: 'WARRIOR',
     deck: [
       // Your deck definition
-    ]
-  }
+    ],
+  },
 });
 
 // Start the game
@@ -62,14 +62,11 @@ game.start();
 ## Documentation
 
 - [API Documentation](docs/)
-- [Game Rules](docs/rules.md)
-- [Development Guide](docs/development.md)
 
 ## Testing
 
 ```bash
-npm test
-npm run test:coverage
+npm run test
 ```
 
 ## Building

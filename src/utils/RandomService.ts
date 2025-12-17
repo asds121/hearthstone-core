@@ -3,11 +3,9 @@
  * 提供可预测的随机数生成，支持游戏回放
  */
 export class RandomService {
-  private seed: number;
   private sequence: number[] = [];
   private index: number = 0;
   private isRecording: boolean = true;
-  private isPredictable: boolean = false;
 
   /**
    * 创建随机数服务
@@ -15,12 +13,8 @@ export class RandomService {
    */
   constructor(seed?: number) {
     if (seed !== undefined) {
-      this.seed = seed;
-      this.isPredictable = true;
       this.isRecording = false;
     } else {
-      this.seed = Date.now();
-      this.isPredictable = false;
       this.isRecording = true;
     }
   }

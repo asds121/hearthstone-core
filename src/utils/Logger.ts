@@ -25,25 +25,15 @@ const logConfiguration = {
     new winston.transports.File({
       filename: 'logs/error.log',
       level: 'error',
-      format: winston.format.combine(
-        winston.format.timestamp(),
-        winston.format.json()
-      ),
+      format: winston.format.combine(winston.format.timestamp(), winston.format.json()),
     }),
     new winston.transports.File({
       filename: 'logs/combined.log',
-      format: winston.format.combine(
-        winston.format.timestamp(),
-        winston.format.json()
-      ),
+      format: winston.format.combine(winston.format.timestamp(), winston.format.json()),
     }),
   ],
-  exceptionHandlers: [
-    new winston.transports.File({ filename: 'logs/exceptions.log' }),
-  ],
-  rejectionHandlers: [
-    new winston.transports.File({ filename: 'logs/rejections.log' }),
-  ],
+  exceptionHandlers: [new winston.transports.File({ filename: 'logs/exceptions.log' })],
+  rejectionHandlers: [new winston.transports.File({ filename: 'logs/rejections.log' })],
 };
 
 /**

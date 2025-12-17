@@ -161,11 +161,7 @@ export interface IZoneManager {
    * @param newPlayerId 目标玩家ID
    * @returns 是否可以移动
    */
-  canMoveToZone(
-    entity: IEntity,
-    newZone: ZoneType,
-    newPlayerId?: PlayerId
-  ): boolean;
+  canMoveToZone(entity: IEntity, newZone: ZoneType, newPlayerId?: PlayerId): boolean;
 
   /**
    * 获取指定区域中的所有实体
@@ -252,11 +248,7 @@ export interface IZoneMoveHandler {
    * @param targetPlayerId 目标玩家
    * @returns 处理结果
    */
-  handleFullZone(
-    entity: IEntity,
-    targetZone: ZoneType,
-    targetPlayerId: PlayerId
-  ): MoveResult;
+  handleFullZone(entity: IEntity, targetZone: ZoneType, targetPlayerId: PlayerId): MoveResult;
 
   /**
    * 处理区域溢出

@@ -6,6 +6,10 @@ import { EntityId, EntityType, PlayerId, ZoneType, TagType } from '../../types';
  * 提供了IEntity接口的默认实现
  */
 export abstract class BaseEntity implements IEntity {
+  // 导出类型供外部使用
+  static readonly EntityType = EntityType;
+  static readonly ZoneType = ZoneType;
+  static readonly TagType = TagType;
   readonly id: EntityId;
   readonly type: EntityType;
   zone: ZoneType;
@@ -114,11 +118,15 @@ export abstract class BaseEntity implements IEntity {
     this.zonePosition = data.zonePosition;
     this.controller = data.controller;
     this.owner = data.owner;
-    this.tags = new Map(Object.entries(data.tags));
+    this.tags = new Map(Object.entries(data.tags).map(([key, value]) => [key as TagType, value]));
     this.enchantments = data.enchantments.map((e: any) => {
       // 这里需要根据实体类型创建具体的实体实例
       // 暂时使用BaseEntity作为占位符
-      const entity = new (class extends BaseEntity {})();
+      const entity = new (class extends BaseEntity {
+        constructor() {
+          super(e.id, e.type);
+        }
+      })();
       entity.fromJSON(e);
       return entity;
     });
@@ -138,6 +146,19 @@ export class GameEntity extends BaseEntity {
   constructor(id: EntityId) {
     super(id, EntityType.GAME);
   }
+
+  /**
+   * 转换为JSON对象
+   */
+  toJSON(): any {
+    const baseJson = super.toJSON();
+    return {
+      ...baseJson,
+      turn: this.turn,
+      step: this.step,
+      state: this.state,
+    };
+  }
 }
 
 /**
@@ -145,20 +166,42 @@ export class GameEntity extends BaseEntity {
  */
 export class PlayerEntity extends BaseEntity {
   name: string = '';
-  hero!: IHeroEntity;
-  heroPower!: IHeroPowerEntity;
+  hero!: HeroEntity;
+  heroPower!: HeroPowerEntity;
   mana: number = 0;
   maxMana: number = 0;
   overload: number = 0;
   pendingOverload: number = 0;
-  hand: ICardEntity[] = [];
-  deck: ICardEntity[] = [];
+  hand: CardEntity[] = [];
+  deck: CardEntity[] = [];
   graveyard: IEntity[] = [];
-  secrets: ISecretEntity[] = [];
-  weapon?: IWeaponEntity;
+  secrets: SpellEntity[] = [];
+  weapon?: WeaponEntity;
 
   constructor(id: EntityId) {
     super(id, EntityType.PLAYER);
+  }
+
+  /**
+   * 转换为JSON对象
+   */
+  toJSON(): any {
+    const baseJson = super.toJSON();
+    return {
+      ...baseJson,
+      name: this.name,
+      hero: this.hero?.toJSON(),
+      heroPower: this.heroPower?.toJSON(),
+      mana: this.mana,
+      maxMana: this.maxMana,
+      overload: this.overload,
+      pendingOverload: this.pendingOverload,
+      hand: this.hand.map(card => card.toJSON()),
+      deck: this.deck.map(card => card.toJSON()),
+      graveyard: this.graveyard.map(entity => entity.toJSON()),
+      secrets: this.secrets.map(secret => secret.toJSON()),
+      weapon: this.weapon?.toJSON(),
+    };
   }
 }
 
@@ -176,6 +219,23 @@ export class HeroEntity extends BaseEntity {
 
   constructor(id: EntityId) {
     super(id, EntityType.HERO);
+  }
+
+  /**
+   * 转换为JSON对象
+   */
+  toJSON(): any {
+    const baseJson = super.toJSON();
+    return {
+      ...baseJson,
+      health: this.health,
+      maxHealth: this.maxHealth,
+      armor: this.armor,
+      attack: this.attack,
+      baseAttack: this.baseAttack,
+      isExhausted: this.isExhausted,
+      canAttack: this.canAttack,
+    };
   }
 }
 
@@ -247,6 +307,19 @@ export class HeroPowerEntity extends BaseEntity {
   constructor(id: EntityId) {
     super(id, EntityType.HERO_POWER);
   }
+
+  /**
+   * 转换为JSON对象
+   */
+  toJSON(): any {
+    const baseJson = super.toJSON();
+    return {
+      ...baseJson,
+      cost: this.cost,
+      isExhausted: this.isExhausted,
+      canUse: this.canUse,
+    };
+  }
 }
 
 /**
@@ -284,9 +357,19 @@ export class CardEntity extends BaseEntity {
   constructor(id: EntityId) {
     super(id, EntityType.CARD);
   }
-}
 
-/**
- * 导入其他接口（避免循环依赖）
- */
-import { IHeroEntity, IHeroPowerEntity, ISecretEntity, IWeaponEntity, ICardEntity } from './IEntity';
+  /**
+   * 转换为JSON对象
+   */
+  toJSON(): any {
+    const baseJson = super.toJSON();
+    return {
+      ...baseJson,
+      cardId: this.cardId,
+      name: this.name,
+      cost: this.cost,
+      rarity: this.rarity,
+      text: this.text,
+    };
+  }
+}

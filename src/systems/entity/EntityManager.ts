@@ -1,6 +1,5 @@
-import { IEntity, IEntityFactory } from '../../core/entities/IEntity';
+import { IEntity } from '../../core/entities/IEntity';
 import {
-  BaseEntity,
   GameEntity,
   PlayerEntity,
   HeroEntity,
@@ -12,20 +11,19 @@ import {
   CardEntity,
 } from '../../core/entities/BaseEntity';
 import { EntityType, EntityId } from '../../types';
-import { v4 as uuidv4 } from 'uuid';
 
 /**
  * 实体管理器
  * 负责创建、管理和销毁游戏中的所有实体
  */
-export class EntityManager implements IEntityFactory {
-  private entities: Map<EntityId, IEntity>;
+export class EntityManager {
+  private readonly entities: Map<EntityId, IEntity>;
   private nextId: EntityId;
   private idPool: EntityId[];
 
   constructor() {
     this.entities = new Map<EntityId, IEntity>();
-    this.nextId = 1;
+    this.nextId = 1 as EntityId;
     this.idPool = [];
   }
 
@@ -76,7 +74,7 @@ export class EntityManager implements IEntityFactory {
    * 获取实体
    */
   getEntity(id: EntityId): IEntity | null {
-    return this.entities.get(id) || null;
+    return this.entities.get(id) ?? null;
   }
 
   /**
@@ -134,81 +132,90 @@ export class EntityManager implements IEntityFactory {
   /**
    * 创建游戏实体
    */
-  createGameEntity(attributes?: any): IEntity {
+  createGameEntity(attributes?: any): GameEntity {
     const entity = new GameEntity(this.acquireId());
     this.applyAttributes(entity, attributes);
+    this.entities.set(entity.id, entity);
     return entity;
   }
 
   /**
    * 创建玩家实体
    */
-  createPlayerEntity(attributes?: any): IEntity {
+  createPlayerEntity(attributes?: any): PlayerEntity {
     const entity = new PlayerEntity(this.acquireId());
     this.applyAttributes(entity, attributes);
+    this.entities.set(entity.id, entity);
     return entity;
   }
 
   /**
    * 创建英雄实体
    */
-  createHeroEntity(attributes?: any): IEntity {
+  createHeroEntity(attributes?: any): HeroEntity {
     const entity = new HeroEntity(this.acquireId());
     this.applyAttributes(entity, attributes);
+    this.entities.set(entity.id, entity);
     return entity;
   }
 
   /**
    * 创建随从实体
    */
-  createMinionEntity(attributes?: any): IEntity {
+  createMinionEntity(attributes?: any): MinionEntity {
     const entity = new MinionEntity(this.acquireId());
     this.applyAttributes(entity, attributes);
+    this.entities.set(entity.id, entity);
     return entity;
   }
 
   /**
    * 创建法术实体
    */
-  createSpellEntity(attributes?: any): IEntity {
+  createSpellEntity(attributes?: any): SpellEntity {
     const entity = new SpellEntity(this.acquireId());
     this.applyAttributes(entity, attributes);
+    this.entities.set(entity.id, entity);
     return entity;
   }
 
   /**
    * 创建武器实体
    */
-  createWeaponEntity(attributes?: any): IEntity {
+  createWeaponEntity(attributes?: any): WeaponEntity {
     const entity = new WeaponEntity(this.acquireId());
     this.applyAttributes(entity, attributes);
+    this.entities.set(entity.id, entity);
     return entity;
   }
 
   /**
    * 创建英雄技能实体
    */
-  createHeroPowerEntity(attributes?: any): IEntity {
+  createHeroPowerEntity(attributes?: any): HeroPowerEntity {
     const entity = new HeroPowerEntity(this.acquireId());
     this.applyAttributes(entity, attributes);
+    this.entities.set(entity.id, entity);
     return entity;
   }
 
   /**
    * 创建附魔实体
    */
-  createEnchantmentEntity(attributes?: any): IEntity {
+  createEnchantmentEntity(attributes?: any): EnchantmentEntity {
     const entity = new EnchantmentEntity(this.acquireId());
     this.applyAttributes(entity, attributes);
+    this.entities.set(entity.id, entity);
     return entity;
   }
 
   /**
    * 创建卡牌实体
    */
-  createCardEntity(attributes?: any): IEntity {
+  createCardEntity(attributes?: any): CardEntity {
     const entity = new CardEntity(this.acquireId());
     this.applyAttributes(entity, attributes);
+    this.entities.set(entity.id, entity);
     return entity;
   }
 

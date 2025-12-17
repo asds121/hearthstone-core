@@ -1,7 +1,7 @@
 import { IGameEvent } from '../../core/events/IGameEvent';
-import { ITrigger, ITriggerConfig } from '../../core/events/ITrigger';
-import { SimpleTrigger } from '../../core/events/BaseTrigger';
-import { EventType, TriggerPriority } from '../../types';
+import { ITrigger } from '../../core/events/ITrigger';
+
+import { EventType } from '../../types';
 import { EventEmitter } from 'eventemitter3';
 
 /**
@@ -11,10 +11,10 @@ import { EventEmitter } from 'eventemitter3';
 export class EventManager {
   private eventQueue: IGameEvent[] = [];
   private processingQueue: IGameEvent[] = [];
-  private triggers: Map<EventType, ITrigger[]> = new Map();
-  private emitter: EventEmitter;
+  private readonly triggers: Map<EventType, ITrigger[]> = new Map();
+  private readonly emitter: EventEmitter;
   private processingDepth: number = 0;
-  private maxProcessingDepth: number = 100;
+  private readonly maxProcessingDepth: number = 100;
   private isPaused: boolean = false;
 
   constructor() {
@@ -59,23 +59,23 @@ export class EventManager {
    */
   registerTrigger(trigger: ITrigger): void {
     const eventType = trigger.eventType;
-    
+
     if (!this.triggers.has(eventType)) {
       this.triggers.set(eventType, []);
     }
 
     const triggerList = this.triggers.get(eventType)!;
     triggerList.push(trigger);
-    
+
     // 按优先级排序
-    this.sortTriggers(triggerList);
+    this.sortTriggers(triggerList, null as any);
   }
 
   /**
    * 注销扳机
    */
   unregisterTrigger(triggerId: string): void {
-    for (const [eventType, triggerList] of this.triggers) {
+    for (const [, triggerList] of this.triggers) {
       const index = triggerList.findIndex(t => t.id === triggerId);
       if (index !== -1) {
         triggerList.splice(index, 1);
@@ -114,16 +114,17 @@ export class EventManager {
     this.processingDepth++;
 
     try {
-      // 处理嵌套队列
-      while (this.processingQueue.length > 0) {
-        const event = this.processingQueue.shift()!;
-        this.processEvent(event);
-      }
-
-      // 处理主队列
-      while (this.eventQueue.length > 0) {
-        const event = this.eventQueue.shift()!;
-        this.processEvent(event);
+      // 继续处理直到两个队列都为空
+      while (this.eventQueue.length > 0 || this.processingQueue.length > 0) {
+        // 优先处理嵌套队列（新产生的事件）
+        if (this.processingQueue.length > 0) {
+          const event = this.processingQueue.shift()!;
+          this.processEvent(event);
+        } else if (this.eventQueue.length > 0) {
+          // 然后处理主队列
+          const event = this.eventQueue.shift()!;
+          this.processEvent(event);
+        }
       }
     } finally {
       this.processingDepth--;
@@ -165,7 +166,7 @@ export class EventManager {
    * 获取指定类型的扳机
    */
   getTriggers(eventType: EventType): ITrigger[] {
-    return this.triggers.get(eventType) || [];
+    return this.triggers.get(eventType) ?? [];
   }
 
   /**
@@ -214,7 +215,9 @@ export class EventManager {
   /**
    * 排序扳机
    */
-  private sortTriggers(triggers: ITrigger[], event: IGameEvent): ITrigger[] {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+  private sortTriggers(triggers: ITrigger[], _event: IGameEvent): ITrigger[] {
     return triggers.sort((a, b) => {
       // 1. 按优先级排序
       if (a.priority !== b.priority) {
@@ -236,8 +239,8 @@ export class EventManager {
   /**
    * 获取区域顺序
    */
-  private getZoneOrder(entity: IEntity): number {
-    switch (entity.zone) {
+  private getZoneOrder(entity: any): number {
+    switch ((entity as any).zone) {
       case 'PLAY':
         return 1;
       case 'SECRET':

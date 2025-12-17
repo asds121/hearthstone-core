@@ -33,6 +33,12 @@ export * from './utils/RandomService';
 export const VERSION = '1.0.0';
 
 // 默认导出
+import { Game } from './core/Game';
+import { EntityManager } from './systems/entity/EntityManager';
+import { EventManager } from './systems/event/EventManager';
+import { ZoneManager } from './systems/zone/ZoneManager';
+import { SequenceManager } from './systems/sequence/SequenceManager';
+
 export default {
   VERSION,
   Game,
