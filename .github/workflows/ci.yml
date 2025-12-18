@@ -32,13 +32,6 @@ jobs:
           echo "NPM version: $(npm --version)"
           echo "✅ Environment validated"
         
-      - name: Verify build artifacts
-        run: |
-          if [ ! -d "dist" ]; then echo "❌ dist directory not found"; exit 1; fi
-          echo "✅ Build artifacts verified"
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
       - name: Run linter
         run: npm run lint
 
@@ -47,6 +40,13 @@ jobs:
 
       - name: Run build
         run: npm run build
+
+      - name: Verify build artifacts
+        run: |
+          if [ ! -d "dist" ]; then echo "❌ dist directory not found"; exit 1; fi
+          echo "✅ Build artifacts verified"
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
@@ -83,6 +83,10 @@ jobs:
 
   security:
     runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
 
     steps:
       - uses: actions/checkout@v4
