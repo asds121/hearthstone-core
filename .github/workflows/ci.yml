@@ -33,10 +33,10 @@ jobs:
           echo "✅ Environment validated"
         
       - name: Run linter
-        run: npm run lint
+        run: npx eslint src --ext .ts
 
       - name: Run tests
-        run: npm test -- --config jest.config.js --ci --verbose
+        run: npx jest --config jest.ci.config.js --ci --passWithNoTests=false
 
       - name: Run build
         run: npm run build

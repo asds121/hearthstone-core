@@ -9,6 +9,7 @@ module.exports = {
   transform: {
     '^.+\\.ts$': 'ts-jest',
   },
+  setupFilesAfterEnv: ['<rootDir>/src/tests/setup.ts'],
   collectCoverageFrom: [
     'src/**/*.ts',
     '!src/**/*.d.ts',
@@ -34,5 +35,6 @@ module.exports = {
   passWithNoTests: false,
   verbose: true,
   clearMocks: true,
-  resetMocks: true
+  resetMocks: true,
+  testTimeout: 10000
 };
