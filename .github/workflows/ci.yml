@@ -36,7 +36,7 @@ jobs:
         run: npm run lint
 
       - name: Run tests
-        run: npm test -- --ci --verbose
+        run: npm test -- --config jest.config.js --ci --verbose
 
       - name: Run build
         run: npm run build
