@@ -36,7 +36,15 @@ jobs:
         run: npx eslint src --ext .ts
 
       - name: Run tests
-        run: npx jest --config jest.ci.config.js --ci --passWithNoTests=false
+        run: |
+          echo "Working directory: $PWD"
+          echo "=== Listing available test files ==="
+          ls -la src/tests/*.test.ts || echo "No test files found with ls"
+          find src/tests -name "*.test.ts" || echo "No test files found with find"
+          echo "=== Testing Jest list command ==="
+          npx jest --config jest.linux.config.js --listTests
+          echo "=== Running Jest tests ==="
+          npx jest --config jest.linux.config.js --ci --verbose --passWithNoTests=false
 
       - name: Run build
         run: npm run build
