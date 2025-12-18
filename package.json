@@ -27,7 +27,7 @@
   "author": "AI Assistant",
   "license": "MIT",
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=18.0.0"
   },
   "dependencies": {
     "eventemitter3": "^5.0.1",
