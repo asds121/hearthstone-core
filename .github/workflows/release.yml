@@ -25,13 +25,33 @@ jobs:
         cache: 'npm'
     
     - name: Install dependencies
-      run: npm ci
+      run: |
+        echo "=== Installing dependencies ==="
+        npm ci
+        echo "=== Verifying installation ==="
+        npm list --depth=0 || echo "Package list completed"
     
+    - name: Debug test setup
+      run: |
+        echo "=== Checking test configuration ==="
+        ls -la jest.*.config.js || echo "No Jest config files found"
+        echo "=== Checking for test files ==="
+        find . -name "*.test.ts" -type f || echo "No test files found"
+        echo "=== Checking TypeScript config ==="
+        ls -la tsconfig*.json || echo "No TypeScript config files found"
+        echo "=== Testing Jest list command ==="
+        npx jest --config jest.ci.config.js --listTests || echo "Jest list failed"
+        
     - name: Run tests
-      run: npm test
+      run: npm run test:ci
+      continue-on-error: false
     
     - name: Build project
-      run: npm run build
+      run: |
+        echo "=== Building project ==="
+        npm run build
+        echo "=== Verifying build artifacts ==="
+        ls -la dist/ || echo "No dist directory found"
     
     - name: Generate documentation
       run: npm run docs

@@ -9,6 +9,7 @@
     "dev": "ts-node src/index.ts",
     "start": "node dist/index.js",
     "test": "jest --config jest.final.config.js",
+    "test:ci": "jest --config jest.ci.config.js --ci --verbose --passWithNoTests=false",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "lint": "eslint src/**/*.ts",
