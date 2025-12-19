@@ -43,7 +43,7 @@ Thumbs.db
 
 # Test
 *.test.js
-*.test.ts
+# *.test.ts    # 注释掉这行以允许TypeScript测试文件
 *.spec.js
 *.spec.ts
 
