@@ -11,6 +11,8 @@
     "test": "jest --config jest.final.config.js",
     "test:ci": "jest --config jest.ci.config.js --ci --verbose --passWithNoTests=false",
     "test:release": "jest --config jest.release.config.js --ci --verbose --passWithNoTests=false",
+    "test:release:fixed": "jest --config jest.release.fixed.config.js --ci --verbose --passWithNoTests=false",
+    "test:release:linux": "jest --config jest.linux.config.js --ci --verbose --passWithNoTests=false",
     "test:diagnose": "node scripts/diagnose-tests.js",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
