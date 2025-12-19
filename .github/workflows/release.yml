@@ -33,17 +33,46 @@ jobs:
     
     - name: Debug test setup
       run: |
-        echo "=== Checking test configuration ==="
+        echo "=== Comprehensive Test Debug ==="
+        echo "Working directory: $(pwd)"
+        echo "=== Directory structure ==="
+        find . -type d -name "src" -o -name "tests" | head -10
+        echo "=== Jest config files ==="
         ls -la jest.*.config.js || echo "No Jest config files found"
-        echo "=== Checking for test files ==="
-        find . -name "*.test.ts" -type f || echo "No test files found"
-        echo "=== Checking TypeScript config ==="
+        echo "=== TypeScript config files ==="
         ls -la tsconfig*.json || echo "No TypeScript config files found"
-        echo "=== Testing Jest list command ==="
-        npx jest --config jest.ci.config.js --listTests || echo "Jest list failed"
+        echo "=== Test files with different patterns ==="
+        echo "Pattern 1: find . -name '*.test.ts'"
+        find . -name "*.test.ts" -type f || echo "No test files found with pattern 1"
+        echo "Pattern 2: find . -path '*/src/tests/*.test.ts'"
+        find . -path "*/src/tests/*.test.ts" -type f || echo "No test files found with pattern 2"
+        echo "Pattern 3: find . -path '*/src/tests/*.test.ts'"
+        find . -path "*/src/tests/*.test.ts" -type f || echo "No test files found with pattern 3"
+        echo "=== Detailed src/tests directory check ==="
+        if [ -d "src/tests" ]; then
+          echo "src/tests directory exists"
+          ls -la src/tests/
+          echo "Files in src/tests:"
+          find src/tests/ -name "*.test.ts" -exec echo "Found: {}" \;
+        else
+          echo "src/tests directory does not exist"
+        fi
+        echo "=== Running Jest diagnostic script ==="
+        node scripts/diagnose-tests.js || echo "Diagnostic script failed"
+        echo "=== Testing Jest with simplest config ==="
+        npx jest --config jest.release.config.js --listTests || echo "Jest list failed"
         
-    - name: Run tests
-      run: npm run test:ci
+    - name: Run tests with fail-safe
+      run: |
+        echo "=== Attempting to run tests ==="
+        if npm run test:release; then
+          echo "✅ Tests completed successfully"
+        else
+          echo "❌ Test run failed, trying alternative approach"
+          echo "=== Running Jest directly with explicit paths ==="
+          npx jest --config jest.release.config.js --ci --verbose src/tests/*.test.ts || echo "Direct test run also failed"
+          exit 1
+        fi
       continue-on-error: false
     
     - name: Build project
