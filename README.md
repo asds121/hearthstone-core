@@ -1,6 +1,6 @@
-# Hearthstone Game Engine
+# Hearthstone Core
 
-A comprehensive Hearthstone game engine implementation in TypeScript, featuring event-driven architecture and domain-driven design.
+A comprehensive Hearthstone game engine core implementation in TypeScript, featuring event-driven architecture and domain-driven design.
 
 ## Features
 
@@ -30,7 +30,7 @@ npm install
 ## Quick Start
 
 ```typescript
-import { Game, EntityManager, EventManager } from 'hearthstone-game-engine';
+import { Game, EntityManager, EventManager } from 'hearthstone-core';
 
 // Create a new game
 const game = new Game({

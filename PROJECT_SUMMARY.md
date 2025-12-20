@@ -1,4 +1,4 @@
-# Hearthstone Game Engine - Project Summary
+# Hearthstone Core - Project Summary
 
 ## Overview
 
@@ -7,7 +7,7 @@ This is a comprehensive Hearthstone game engine implementation in TypeScript, bu
 ## Project Structure
 
 ```
-hearthstone-game-engine/
+hearthstone-core/
 ├── .github/workflows/          # CI/CD workflows
 ├── examples/                   # Example code
 ├── src/                        # Source code

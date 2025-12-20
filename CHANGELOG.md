@@ -41,7 +41,7 @@
 
 ### Added
 - Initial project setup with TypeScript configuration
-- Comprehensive Hearthstone game engine implementation
+- Comprehensive Hearthstone core implementation
 - Jest testing framework with 37 tests covering core functionality
 - ESLint and Prettier code quality tools
 - GitHub Actions CI/CD pipeline

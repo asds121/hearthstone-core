@@ -1,6 +1,6 @@
-# Contributing to Hearthstone Game Engine
+# Contributing to Hearthstone Core
 
-Thank you for your interest in contributing to the Hearthstone Game Engine! This document provides guidelines and instructions for contributing to the project.
+Thank you for your interest in contributing to Hearthstone Core! This document provides guidelines and instructions for contributing to the project.
 
 ## Code of Conduct
 
@@ -49,8 +49,8 @@ By participating in this project, you agree to abide by our Code of Conduct:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/hearthstone-game-engine.git
-   cd hearthstone-game-engine
+   git clone https://github.com/your-username/hearthstone-core.git
+   cd hearthstone-core
    ```
 
 2. Install dependencies:

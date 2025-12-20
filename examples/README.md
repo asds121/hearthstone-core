@@ -1,6 +1,6 @@
 # Examples
 
-This directory contains example code demonstrating how to use the Hearthstone Game Engine.
+This directory contains example code demonstrating how to use Hearthstone Core.
 
 ## Available Examples
 
