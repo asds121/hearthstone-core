@@ -2,7 +2,7 @@
 
 ## Overview
 
-This is a comprehensive Hearthstone game engine implementation in TypeScript, built based on the provided project documentation. The engine follows event-driven architecture and domain-driven design principles.
+This is a comprehensive Hearthstone core implementation in TypeScript, built based on the provided project documentation. The core follows event-driven architecture and domain-driven design principles.
 
 ## Project Structure
 
@@ -170,7 +170,7 @@ The project is ready for GitHub with:
 ## Usage Example
 
 ```typescript
-import { Game } from 'hearthstone-game-engine';
+import { Game } from 'hearthstone-core';
 
 // Create a new game
 const game = new Game({
@@ -208,7 +208,7 @@ Potential areas for expansion:
 
 ## Conclusion
 
-This project provides a solid foundation for a Hearthstone game engine with:
+This project provides a solid foundation for Hearthstone core with:
 
 - Modern TypeScript architecture
 - Comprehensive testing
